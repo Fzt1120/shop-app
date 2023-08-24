@@ -1,11 +1,13 @@
 <script setup>
 import { reactive, ref } from "vue";
-import { login } from "@/api/manager.js";
-import { ElNotification } from "element-plus";
+import { login, gitinfo } from "@/api/manager.js";
+import { toast } from "@/composables/util.js";
 import { useRouter } from "vue-router";
+import { setToken } from "@/composables/auth.js";
+import store from "@/store";
 
 const router = useRouter();
-
+const loading = ref(false);
 const form = reactive({
   username: "",
   password: "",
@@ -32,25 +34,22 @@ const onSubmit = () => {
     if (!valid) {
       return false;
     }
+    loading.value = true;
     login(form.username, form.password)
       .then((res) => {
-        console.log(res.data.data);
-        ElNotification({
-          message: "登录成功",
-          type: "success",
-          duration: 2000,
+        console.log(res.token);
+        setToken(res.token);
+        toast("登录成功");
+        gitinfo().then((res2) => {
+          store.commit("SET_USERINFO", res2);
+          console.log("res2", res2);
         });
         router.push("/");
       })
-      .catch((err) => {
-        ElNotification({
-          message: err.response.data.msg || "请求失败",
-          type: "error",
-          duration: 2000,
-        });
+      .finally(() => {
+        loading.value = false;
       });
   });
-  console.log(formRef.value);
 };
 </script>
 
@@ -93,6 +92,7 @@ const onSubmit = () => {
         </el-form-item>
         <el-form-item>
           <el-button
+            :loading="loading"
             class="w-[250px]"
             color="#6172f5"
             type="primary"
