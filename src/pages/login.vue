@@ -1,9 +1,7 @@
 <script setup>
-import { reactive, ref } from "vue";
-import { login, gitinfo } from "@/api/manager.js";
+import { reactive, ref, onMounted, onBeforeUnmount } from "vue";
 import { toast } from "@/composables/util.js";
 import { useRouter } from "vue-router";
-import { setToken } from "@/composables/auth.js";
 import store from "@/store";
 
 const router = useRouter();
@@ -35,15 +33,10 @@ const onSubmit = () => {
       return false;
     }
     loading.value = true;
-    login(form.username, form.password)
+    store
+      .dispatch("login", form)
       .then((res) => {
-        console.log(res.token);
-        setToken(res.token);
         toast("登录成功");
-        gitinfo().then((res2) => {
-          store.commit("SET_USERINFO", res2);
-          console.log("res2", res2);
-        });
         router.push("/");
       })
       .finally(() => {
@@ -51,6 +44,19 @@ const onSubmit = () => {
       });
   });
 };
+// 监听回车事件
+const onKeyUp = (e) => {
+  if (e.key == "Enter") onSubmit();
+};
+
+// 添加键盘监听
+onMounted(() => {
+  document.addEventListener("keyup", onKeyUp);
+});
+// 移除键盘监听
+onBeforeUnmount(() => {
+  document.removeEventListener("keyup", onKeyUp);
+});
 </script>
 
 <template>
