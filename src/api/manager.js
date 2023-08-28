@@ -11,3 +11,7 @@ export const getinfo = () => {
 export const logout=()=>{
    return axios.post("/admin/logout")
 }
+
+export const updatepassword=(data)=>{
+   return axios.post("/admin/updatepassword",data)
+}
