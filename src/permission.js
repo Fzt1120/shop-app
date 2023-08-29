@@ -1,4 +1,4 @@
-import router from "@/router/index";
+import {router,addRoutes} from "@/router/index";
 import { getToken } from "@/composables/auth.js";
 import { toast, showFullLoading, hideFullLoading } from "@/composables/util.js";
 import store from "./store";
@@ -18,20 +18,17 @@ router.beforeEach(async (to, from, next) => {
     return next({ path: from.path ? from.path : "/" });
   }
   //如果用户登录了，自动获取用户信息，并存储到vuex中
+  let hasNewRoutes=false
   if (token) {
-    await store.dispatch("getinfo");
+    let {menus}= await store.dispatch("getinfo");
+    //动态添加路由
+    hasNewRoutes=addRoutes(menus)
   }
   //设置页面标题
   let title = (to.meta.title ? to.meta.title : "") + "-好好学习";
   document.title = title;
-  next();
+  hasNewRoutes?next(to.fullPath):next()
 });
-
-// gitinfo().then((res2) => {
-//           store.commit("SET_USERINFO", res2);
-//           console.log("res2", res2);
-//         });
-
 //全局后置守卫
 router.afterEach((to, from) => {
   //隐藏loading

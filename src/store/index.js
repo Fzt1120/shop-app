@@ -1,17 +1,30 @@
 import { createStore } from "vuex";
 import { login, getinfo } from "@/api/manager.js";
-import { setToken,removeToken } from "@/composables/auth.js";
+import { setToken, removeToken } from "@/composables/auth.js";
 
 const store = createStore({
   state() {
     return {
       user: {}, //用户信息
+      asideWidth: "250px", //侧边宽度
+      menus:[],
+      ruleNames: []
     };
   },
   mutations: {
     //记录用户信息
     SET_USERINFO(state, user) {
       state.user = user;
+    },
+    // 展开/缩起侧边
+    handleAsideWidth(state) {
+      state.asideWidth = state.asideWidth == "250px" ? "64px" : "250px";
+    },
+    SET_MENUS(state, menus) {
+      state.menus = menus;
+    },
+    SET_RULENAMES(state, ruleNames) {
+      state.ruleNames = ruleNames;
     },
   },
   actions: {
@@ -32,6 +45,8 @@ const store = createStore({
         getinfo()
           .then((res) => {
             commit("SET_USERINFO", res);
+            commit("SET_MENUS", res.menus);
+            commit("SET_RULENAMES",res.ruleNames)
             resolve(res);
           })
           .catch((err) => reject(err));
@@ -40,10 +55,10 @@ const store = createStore({
     //退出登录
     logout({ commit }) {
       //移除cookie里的token
-      removeToken()
+      removeToken();
       //清除当前用户状态
-       commit("SET_USERINFO",{})
-    }
+      commit("SET_USERINFO", {});
+    },
   },
 });
 

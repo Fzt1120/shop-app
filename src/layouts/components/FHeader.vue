@@ -1,8 +1,4 @@
 <script setup>
-import { showModal, toast } from "@/composables/util.js";
-import { logout, updatepassword } from "@/api/manager.js";
-import { useRouter } from "vue-router";
-import { useStore } from "vuex";
 import { useFullscreen } from "@vueuse/core";
 import { ref, reactive } from "vue";
 import FormDrawer from "@/components/FormDrawer.vue";
@@ -12,8 +8,6 @@ const {
   toggle, //切换全屏
 } = useFullscreen();
 const { formDrawerRef, form, rules, formRef, onSubmit } = useRepassword();
-const router = useRouter();
-const store = useStore();
 const loading = ref(false);
 
 const handleCommand = (e) => {
@@ -38,8 +32,9 @@ const handleRefresh = () => location.reload();
       好好学习
     </span>
     <el-tooltip effect="dark" content="列表" placement="bottom">
-      <el-icon class="icon-btn">
-        <Fold />
+      <el-icon class="icon-btn" @click="$store.commit('handleAsideWidth')">
+        <Fold v-if="$store.state.asideWidth == '250px'" />
+        <Expand v-else />
       </el-icon>
     </el-tooltip>
     <el-tooltip effect="dark" content="刷新" placement="bottom">
