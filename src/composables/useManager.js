@@ -64,6 +64,8 @@ export const useRepassword = () => {
 };
 
 export const useLogout = () => {
+    const router = useRouter();
+  const store = useStore();
   const handleLogout = () => {
     showModal("是否要退出登录").then((res) => {
       logout().finally(() => {

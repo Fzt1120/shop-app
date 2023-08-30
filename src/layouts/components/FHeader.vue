@@ -2,12 +2,13 @@
 import { useFullscreen } from "@vueuse/core";
 import { ref, reactive } from "vue";
 import FormDrawer from "@/components/FormDrawer.vue";
-import { useRepassword } from "@/composables/useManager.js";
+import { useRepassword, useLogout } from "@/composables/useManager.js";
 const {
   isFullscreen, //是否全屏状态
   toggle, //切换全屏
 } = useFullscreen();
 const { formDrawerRef, form, rules, formRef, onSubmit } = useRepassword();
+const { handleLogout } = useLogout();
 const loading = ref(false);
 
 const handleCommand = (e) => {
@@ -109,6 +110,7 @@ const handleRefresh = () => location.reload();
 .f-header {
   @apply flex items-center bg-indigo-700 text-light-50 fixed top-0 left-0 right-0;
   height: 64px;
+  z-index: 1000;
 }
 
 .logo {
