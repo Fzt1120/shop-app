@@ -4,7 +4,7 @@ import { useCookies } from "@vueuse/integrations/useCookies";
 import {router} from '@/router'
 
 export const useTabList = () => {
-    const route = useRoute();
+const route = useRoute();
 const cookie = useCookies();
 const activeTab = ref(route.path);
 const tabList = ref([
@@ -45,7 +45,6 @@ const changeTab = (t) => {
 };
 
 const removeTab = (t) => {
-  console.log(t);
   let tabs = tabList.value;
   let a = activeTab.value;
   if (a == t) {

@@ -10,6 +10,7 @@ import '@/permission.js'
 
 
 
+
 const app = createApp(App)
 app.use(store)
 app.use(router)
@@ -20,4 +21,6 @@ for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
 
 app.use(ElementPlus)
 import 'nprogress/nprogress.css'
+import permission from '@/directives/permission.js'
+app.use(permission)
 app.mount('#app')
